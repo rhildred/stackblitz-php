@@ -29,7 +29,12 @@ app.get(/\.php$/, async (req, res) => {
   process.stdout.write = (chunk) => {
     res.write(chunk);
   };
-  await php.cli(['php', ...args]);
+  try {
+    await php.cli(['php-cgi', ...args]);
+  } catch {
+    res.end();
+    return;
+  }
   res.end();
   process.stdout.write = originalStdoutWrite;
 });
